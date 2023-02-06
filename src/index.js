@@ -12,6 +12,6 @@ inputEl.addEventListener('input', debounce(getValue, DEBOUNCE_DELAY));
 function getValue(e) {
   const inputValue = e.target.value.trim();
   if (inputValue !== '') {
-    fetchCountries(inputValue);
+    fetchCountries(inputValue).then(data => console.log(data));
   }
 }
