@@ -1,9 +1,10 @@
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import './css/styles.css';
 import fetchCountries from './js/fetchCountries';
+import './css/styles.css';
 
 const DEBOUNCE_DELAY = 300;
+
 const inputEl = document.getElementById('search-box');
 const listEl = document.querySelector('.country-list');
 const infoContainer = document.querySelector('.country-info');
@@ -13,18 +14,12 @@ inputEl.addEventListener('input', debounce(getValue, DEBOUNCE_DELAY));
 function getValue(e) {
   const inputValue = e.target.value.trim();
   if (inputValue === '') {
-    listEl.innerHTML = '';
-    infoContainer.innerHTML = '';
+    clearHtml();
   } else {
     fetchCountries(inputValue)
       .then(data => {
         if (data.length > 10) {
-          Notify.info(
-            'Too many matches found. Please enter a more specific name.',
-            {
-              clickToClose: true,
-            }
-          );
+          logInfo();
         } else if (data.length > 1) {
           infoContainer.innerHTML = '';
           listEl.innerHTML = listMarkUp(data);
@@ -33,12 +28,25 @@ function getValue(e) {
           infoContainer.innerHTML = infoContainerMarkUp(data);
         }
       })
-      .catch(() => {
-        Notify.failure('Oops, there is no country with that name', {
-          clickToClose: true,
-        });
-      });
+      .catch(logError);
   }
+}
+
+function clearHtml() {
+  listEl.innerHTML = '';
+  infoContainer.innerHTML = '';
+}
+
+function logInfo() {
+  Notify.info('Too many matches found. Please enter a more specific name.', {
+    clickToClose: true,
+  });
+}
+
+function logError() {
+  Notify.failure('Oops, there is no country with that name', {
+    clickToClose: true,
+  });
 }
 
 function listMarkUp(countries) {
