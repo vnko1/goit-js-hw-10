@@ -12,19 +12,52 @@ inputEl.addEventListener('input', debounce(getValue, DEBOUNCE_DELAY));
 
 function getValue(e) {
   const inputValue = e.target.value.trim();
-  if (inputValue !== '') {
+  if (inputValue === '') {
+    listEl.innerHTML = '';
+    infoContainer.innerHTML = '';
+  } else {
     fetchCountries(inputValue)
       .then(data => {
         if (data.length > 10) {
           Notify.info(
-            'Too many matches found. Please enter a more specific name.'
+            'Too many matches found. Please enter a more specific name.',
+            {
+              clickToClose: true,
+            }
           );
         } else if (data.length > 1) {
-          console.log(data);
+          infoContainer.innerHTML = '';
+          listEl.innerHTML = listMarkUp(data);
+        } else {
+          listEl.innerHTML = '';
+          infoContainer.innerHTML = infoContainerMarkUp(data);
         }
       })
-      .catch(console.log);
+      .catch(() => {
+        Notify.failure('Oops, there is no country with that name', {
+          clickToClose: true,
+        });
+      });
   }
 }
 
-function listMarkUp(data) {}
+function listMarkUp(countries) {
+  return countries
+    .map(country => {
+      return `<li style='list-style:none; display: flex; align-items: center; gap: 10px'><img src='${country.flags.svg}' width='20' height="20"><p>${country.name}</p></li>`;
+    })
+    .join('');
+}
+
+function infoContainerMarkUp(countries) {
+  const country = countries[0];
+  const languages = country.languages
+    .reduce((acc, language) => {
+      acc.push(language.name);
+      return acc;
+    }, [])
+    .join(', ');
+  const { flags, name, capital, population } = country;
+  const mark = `<div style = 'display: flex; align-items: center; gap: 10px'><img src = '${flags.svg}' width='30' height = '30'><h1>${name}</h1></div><p><span style = 'font-weight: 700'>Capital:</span> ${capital}</p><p><span style = 'font-weight: 700'>Population:</span> ${population}</p><p><span style = 'font-weight: 700'>Languages:</span> ${languages}</p>`;
+  return mark;
+}
