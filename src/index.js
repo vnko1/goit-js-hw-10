@@ -1,4 +1,5 @@
 import debounce from 'lodash.debounce';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import './css/styles.css';
 import fetchCountries from './js/fetchCountries';
 
@@ -12,6 +13,18 @@ inputEl.addEventListener('input', debounce(getValue, DEBOUNCE_DELAY));
 function getValue(e) {
   const inputValue = e.target.value.trim();
   if (inputValue !== '') {
-    fetchCountries(inputValue).then(data => console.log(data));
+    fetchCountries(inputValue)
+      .then(data => {
+        if (data.length > 10) {
+          Notify.info(
+            'Too many matches found. Please enter a more specific name.'
+          );
+        } else if (data.length > 1) {
+          console.log(data);
+        }
+      })
+      .catch(console.log);
   }
 }
+
+function listMarkUp(data) {}
