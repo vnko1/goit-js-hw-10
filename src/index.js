@@ -67,5 +67,5 @@ function infoContainerMarkUp(countries) {
     .join(', ');
   const { flags, name, capital, population } = country;
 
-  return `<div style = 'display: flex; align-items: center; gap: 10px'><img src = '${flags.svg}' width='30' height = '30'><h1>${name}</h1></div><p><span style = 'font-weight: 700'>Capital:</span> ${capital}</p><p><span style = 'font-weight: 700'>Population:</span> ${population}</p><p><span style = 'font-weight: 700'>Languages:</span> ${languages}</p>`;
+  return `<div style = 'display: flex; align-items: center; gap: 10px'><img src = '${flags.svg}' width='60' height = '60'><h1>${name}</h1></div><p><span style = 'font-weight: 700'>Capital:</span> ${capital}</p><p><span style = 'font-weight: 700'>Population:</span> ${population}</p><p><span style = 'font-weight: 700'>Languages:</span> ${languages}</p>`;
 }
